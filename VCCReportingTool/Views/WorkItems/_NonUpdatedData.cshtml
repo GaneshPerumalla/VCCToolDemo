@@ -1,0 +1,119 @@
+﻿@model VCCReportingTool.Models.WorkItem
+@{
+    var grid = new WebGrid(Model.UnUpdatedData, rowsPerPage: 10, canPage: false);
+
+    var Status = ""; var Assignee = "";
+    if (Model.Status1 == null)
+    {
+        Status = "";
+    }
+    else
+    {
+        Status = Model.Status1.Description;
+    }
+
+    if (Model.User == null)
+    {
+        Assignee = "";
+    }
+    else
+    {
+        Assignee = Model.User.FullName;
+    }
+}
+
+<h4>Non Updated Data <span id="spn-NonUpdatedData">(@grid.TotalRowCount items)</span></h4>
+@{
+    @grid.GetHtml(htmlAttributes: new { @id = "WebGrid", @class = "Grid" }, tableStyle: "table table-bordered table-responsive tablealign", headerStyle: "Non_header", columns: grid.Columns(
+     grid.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a> </span> <label id="DevopsItemID" class="edit-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a></label> </text>, style: "col1Width"),
+     grid.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+     grid.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+     grid.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+     grid.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@Assignee</label> </span></text>),
+     grid.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
+     grid.Column("Fixversion", "Fixversion", format: @<text>  <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
+     grid.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@Status</label> </span></text>),
+     grid.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate</label> </span> </text>, style: "col2Width"),
+     grid.Column("Notes", "Notes", format: @<text> <span class="display-mode"> <label id="lblNotes"></label> </span> </text>, style: "col2Width"),
+     grid.Column("", format:@<text>
+        <button data-toggle="modal" data-target="#@item.DevopsItemID">Edit</button>
+       
+            <div id="@item.DevopsItemID" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Update WorkItem</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="inputName">DevopsItem</label>
+                                    <input type="text" class="form-control" id="DevopsItem" value="@item.DevopsItemID" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputComment">Summary</label>
+                                    <textarea class="form-control" id="Summary" rows="4">@item.Summary</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Priority</label>
+                                    <input type="text" class="form-control" id="Priority">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">FixVersion</label>
+                                    <input type="text" class="form-control" id="FixVersion">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Pending With</label>
+                                    <input type="text" list="pendingwithlist" id="PendingWith" class="form-control" />
+                                    <datalist id="pendingwithlist">
+                                        @foreach (var content in ViewBag.Assignee)
+                                        {
+                                            <option id="@content.UserID" value="@content.FullName">@content.FullName</option>
+                                        }
+                                    </datalist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">ReleaseDate</label>
+                                    <input type="date" class="form-control" id="date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Notes</label>
+                                    <input type="text" class="form-control" id="Notes">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Status</label>
+                                    @Html.DropDownList("Status", new SelectList(ViewBag.Status, "StatusID", "Title"), "--Select Status--", new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Assignee</label>
+                                    @Html.DropDownList("Assignee", new SelectList(ViewBag.Assignee, "UserID", "FullName"), "--Select Assignee--", new { @class = "form-control" })
+                                </div>
+                                <p id="Validation-UpdateWorkItem" style="color:red;">
+                                </p>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="change" onclick="UpdateWorkItem(this)" class="btn btn-primary">Update</button>
+                            <button type="button" id="btn-UpdateWorkItem-Cancel"class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    </text>, style: "col3Width", canSort: false)
+     ));
+
+    if (Model.UnUpdatedData.Count == 0)
+    {
+        <script type="text/javascript">
+            $(function () {
+                var row = $("#WebGrid")[0].insertRow(-1);
+                var cell = $(row.insertCell(-1));
+                cell.html("Currently No Workitems are under Non-Updated Category.");
+                cell.attr("colspan", "13").attr("align", "center");
+            });
+        </script>
+    }
+}

@@ -1,0 +1,121 @@
+﻿.bodyContent{
+    margin:0% 3% 0% 3%;
+}
+.table {
+  width: 100% ;
+}
+table th{
+    background-color: white;
+}
+table th a{
+    font-weight:600;
+    color:#44546A;
+}
+tbody tr td, thead tr th{
+        border: 1px solid #8a8686 !important;
+}
+.col1Width , .col2Width ,.col3Width, .FixVersion,.Note{
+    border: 1px solid #8a8686 !important;
+}
+.header {
+background-color: #C1D4E6;
+font-weight: bold;
+color: #FFF;
+}
+.Completed_body{
+background-color: #C6EFCE;
+ border: 1px solid #8a8686 !important;
+}
+.Completed_header{
+background-color: #C6EFCE;
+font-weight: bold;
+ border: 1px solid #8a8686 !important;
+}
+.Non_header{
+background-color: #f2dede;
+font-weight: bold;
+}
+.progress_header{
+  background-color:  #B4C6E7;
+    font-weight: bold;
+}
+.InProgress_body{
+background-color: #B4C6E7;
+}
+.Selected_header{
+background-color: #A9D08E;
+font-weight: bold;
+}
+.Selected_body{
+   background-color: #A9D08E;
+}
+.Backlog_header {
+    background-color: #F8CBAD;
+    font-weight: bold;
+}
+.Backlog_body {
+    background-color: #F8CBAD;
+}
+.UpComing_header{
+    background-color: #ffff;
+    font-weight: bold;
+}
+.edit-mode {
+        max-width: 100px !important;
+}
+.Notes_div{
+        min-width: 224px;
+}
+.note_div{
+    border: 1px solid #dddddd !important;
+   padding: 3px 8px 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 4px !important;
+    box-shadow: 0px 1px #888888 !important;
+}
+label{
+        font-weight: 100;
+}
+a {
+    color: #428bca;
+    text-decoration: none !important;
+}
+.actionitems{
+    float:right;
+}
+.notedesc{
+    font-size: smaller;
+}
+
+th:nth-child(2) {
+   width: 190px ;
+}
+th:nth-child(1) ,th:nth-child(4) , th:nth-child(5) , th:nth-child(6) {
+   width: 90px ;
+}
+th:nth-child(7) {
+   width: 240px;
+}
+
+th:nth-child(8) {
+   width: 180px ;
+}
+th:nth-child(3) {
+   width: 20px ;
+}
+td:nth-child(3) .edit-mode{
+   width: 50px !important;
+}
+td:nth-child(2) .edit-mode {
+   width: 190px ;
+     max-width: 174px !important;
+}
+.body-content{
+        max-width: 1248px !important;
+}
+.totaldataindiv{
+    padding-top:10px;
+}
+.actionworkitems{
+    padding-top:20px;
+}

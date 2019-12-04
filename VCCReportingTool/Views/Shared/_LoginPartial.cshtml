@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Session["LoggedinUser"] != null)
+{
+    //using (Html.BeginForm("LogOff", "Home", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    //{
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Hello " + Session["LoggedinUser"].ToString() + "!", "", "", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li><a href='@Url.Action("LogOff", "Home")'>Log off</a></li>
+    </ul>
+    //}
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@*@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })*@</li>
+        <li>@Html.ActionLink("Log in", "Login", "Home", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,0 +1,41 @@
+﻿@model VCCReportingTool.Models.WorkItem
+@{
+    var UpcomingTasks = new WebGrid(Model.UpcomingData, rowsPerPage: 10, canPage: false);
+}
+<h4>UpComing Data <span id="spn-UpComingData">(@UpcomingTasks.TotalRowCount items)</span></h4>
+@{
+    @UpcomingTasks.GetHtml(htmlAttributes: new { @id = "UpcomingData", @class = "Grid" }, tableStyle: "table table-bordered table-responsive", headerStyle: "UpComing_header", columns: UpcomingTasks.Columns(
+                 UpcomingTasks.Column("TicketID", format: @<text>  <span class="display-mode">@item.TicketID </span> <label id="TicketID" class="edit-mode">@item.TicketID</label> </text>, style: "col1Width"),
+                 UpcomingTasks.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span>
+                <textarea rows="4" cols="50" id="Summary" class="edit-mode">@item.Summary</textarea></text>, style: "col2Width"),
+                 UpcomingTasks.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span>  <input type="text" id="Priority" value="@item.Priority" class="edit-mode priority-edit" /> </text>, style: "col2Width"),
+                 UpcomingTasks.Column("Requester", "Requester", format: @<text>  <span class="display-mode"> <label id="lblRequester">@item.Requester</label> </span> <input type="text" id="Requester" value="@item.Requester" class="edit-mode" /></text>, style: "col2Width"),
+                 UpcomingTasks.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span>
+                <input list="pendingwithlist" id="PendingWith" value="@item.PendingWith" class="edit-mode edit-pendingwith" />
+                <datalist id="pendingwithlist">
+                    @foreach (var content in ViewBag.Assignee)
+                    {
+                        <option id="@content.UserID" value="@content.FullName">@content.FullName</option>
+                    }
+                </datalist>
+                </text>,
+            style: "col2Width"),
+                 UpcomingTasks.Column("Comments", "Comments", format: @<text>  <span class="display-mode"> <label id="lblComments">@item.Comments</label> </span> <input type="text" id="Comments" value="@item.Comments" class="edit-mode" /></text>, style: "col2Width"),
+                 UpcomingTasks.Column("", format: @<text>
+        <button class="edit-user display-mode">Edit</button>
+        <button id=@Convert.ToString(UpcomingTasks.Rows.IndexOf(item) + 1) class="save-user edit-mode">Update</button>
+        <button class="cancel-user edit-mode">Cancel</button>
+                </text>, style: "col3Width", canSort: false)
+                 ));
+            if (Model.UpcomingData.Count == 0)
+            {
+        <script type="text/javascript">
+            $(function () {
+                var row = $("#UpcomingData")[0].insertRow(-1);
+                var cell = $(row.insertCell(-1));
+                cell.html("Currently No Workitems are under UpComing Data Category.");
+                cell.attr("colspan", "10").attr("align", "center");
+            });
+        </script>
+    }
+}

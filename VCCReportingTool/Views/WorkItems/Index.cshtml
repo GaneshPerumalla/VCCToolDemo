@@ -1,0 +1,202 @@
+﻿@model VCCReportingTool.Models.WorkItem
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/DevopsReport.js"></script>
+</head>
+<body>
+    @*Model Popup*@
+    <button type="button" id="btn-dsply-mdl-popup" class="btn btn-info btn-lg hidden" data-toggle="modal" data-target="#model-Popup">Open Modal</button>
+    <div id="model-Popup" class="modal fade commonPopup" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="hdr-section-label" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="mdl-body-container">
+
+                    </div>
+                    <div class="modal-footer" id="mdl-body-footer">
+                        <button type="button" id="mdl-btn-ok" class="btn btn-primary hidden" data-dismiss="modal">OK</button>
+                        <button type="button" id="mdl-btn-yes" class="btn btn-primary hidden" data-dismiss="modal">YES</button>
+                        <button type="button" id="mdl-btn-no" class="btn btn-primary hidden" data-dismiss="modal">NO</button>
+                        <button type="button" id="mdl-btn-cancel" class="btn btn-default hidden" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*-------*@
+
+    <div class="actionworkitems">
+        <div class="nav navbar-nav navbar-right">
+            @*<input type="button" id="SyncDataPopup" class="btn btn-primary" value="sync" data-toggle="modal" data-target="#mySyncModal" />*@
+        </div>
+    </div>
+    <!-- Modal -->
+    @*<div id="mySyncModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Select Options</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Enter Filter Text Here :</label>
+                            <input type="text" class="form-control" id="txtFilterText">
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Dynamics 365 Marketing Website" name="chkBox">Dynamics</label>
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Dynamics 365 Marketing Website\\Integrated Marketing" name="chkBox">Dynamics 365 Integrated Marketing</label>
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Power BI Marketing Website" name="chkBox">Power BI</label>
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Power BI Marketing Website\\Integrated Marketing" name="chkBox">Power BI Integrated Marketing</label>
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Power Platform Marketing Website" name="chkBox">Power Platform</label>
+                        </div>
+                        <div class="checkbox form-group">
+                            <label><input type="checkbox" value="Power Query Marketing Website" name="chkBox">Power Query</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="getCheckboxValues" onclick="GetselectedCheckbox(this)" class="btn btn-primary">Proceed</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div id="divLoader" style="display:none;"><img src="~/Content/ajax-loader.gif" height="200" width="200" alt="Loader" style="position: absolute; top: 50%; left: 45%;z-index:99999" /></div>
+    <form action="WorkItems/ViewPreview" method="post">
+        <div style="background-color: aliceblue;padding: 2%;border: 1px solid teal;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 class="modal-title">Select the below Option to SYNC Devops Data</h4>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="txtFilterText1" placeholder="Search with tags">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Dynamics 365 Marketing Website" name="chkBox">Dynamics</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Dynamics 365 Marketing Website\\Integrated Marketing" name="chkBox">Dynamics 365 Integrated Marketing</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Power BI Marketing Website" name="chkBox">Power BI</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Power BI Marketing Website\\Integrated Marketing" name="chkBox">Power BI Integrated Marketing</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Power Platform Marketing Website" name="chkBox">Power Platform</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="checkbox form-group">
+                        <label><input type="checkbox" value="Power Query Marketing Website" name="chkBox">Power Query</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <button type="button" id="getCheckboxValues" class="btn btn-primary">Proceed</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 text-left">
+                    <div class="checkbox form-group">
+                        <label>Filter Data Based On Project</label>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Select Project
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="filterData" data-projectcode="Dynamics">Dynamics</a></li>
+                                <li><a href="#" class="filterData" data-projectcode="Power BI">Power BI</a></li>
+                                <li><a href="#" class="filterData" data-projectcode="Power Platform">Power Platform</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8 text-left hide" id="lblfilterProject">
+                    <h4>Filtered By :</h4>
+                    <div class="row">
+                        <div class="col-sm-6"><input class="badge" name="FilteredProject" id="FilteredProject" style="display:block" /></div>
+                        <div class="col-sm-6"><button type="button" class="close" id="btn-clearfilter">Clear Filter</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-right" style="top: 41px">
+                @if (Model.CompletedItems.Count != 0 && Model.DevInProgressdata.Count != 0 && Model.SelectedforDevelopment.Count != 0 && Model.BacklogData.Count != 0)
+                {
+                    <button type="submit" id="btnViewPreview" class="btn btn-primary">View Preview</button>
+                }
+            </div>
+        </div>
+    </form>
+        <div id="FullGridContent" class="totaldataindiv">
+            
+            @{
+                Html.RenderPartial("_NonUpdatedData", Model);
+            }
+            @{
+                ViewBag.message = "CompletedItems";
+                Html.RenderPartial("_DevopsPartial", Model);
+            }
+
+            @{
+                ViewBag.message = "SelectedforDev";
+                Html.RenderPartial("_DevopsPartial", Model);
+            }
+            @{
+                ViewBag.message = "DevInProgress";
+                Html.RenderPartial("_DevopsPartial", Model);
+            }
+            @{
+                ViewBag.message = "Backlog";
+                Html.RenderPartial("_DevopsPartial", Model);
+            }
+            @{
+                Html.RenderPartial("_UpcomingData", Model);
+            }
+        </div>
+
+   
+</body>
+</html>

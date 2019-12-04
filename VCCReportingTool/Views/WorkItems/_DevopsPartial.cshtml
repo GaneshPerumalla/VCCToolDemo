@@ -1,0 +1,280 @@
+﻿@model VCCReportingTool.Models.WorkItem
+@{
+    var grid4 = new WebGrid();
+    if (ViewBag.message == "CompletedItems")
+    {
+        grid4 = new WebGrid(Model.CompletedItems, rowsPerPage: 10, canPage: false);
+        <h4>Completed Items <span id="spn-CompletedItems">(@grid4.TotalRowCount items)</span></h4>
+    }
+    else if (ViewBag.message == "SelectedforDev")
+    {
+        grid4 = new WebGrid(Model.SelectedforDevelopment, rowsPerPage: 10, canPage: false);
+        <h4>Selected For Development Items <span id="spn-SelectedforDev">(@grid4.TotalRowCount items)</span></h4>
+    }
+    else if (ViewBag.message == "DevInProgress")
+    {
+        grid4 = new WebGrid(Model.DevInProgressdata, rowsPerPage: 10, canPage: false);
+        <h4>Development In Progress Items <span id="spn-DevInProgress">(@grid4.TotalRowCount items)</span></h4>
+    }
+    else if (ViewBag.message == "Backlog")
+    {
+        grid4 = new WebGrid(Model.BacklogData, rowsPerPage: 10, canPage: false);
+        <h4>Backlog Items <span id="spn-Backlog">(@grid4.TotalRowCount items)</span></h4>
+    }
+}
+
+
+@{
+    @grid4.GetHtml(htmlAttributes: new { @id = "WebGrid4", @class = "Grid " }, tableStyle: "table table-bordered tablealign table-responsive Completed_body " + @ViewBag.message, headerStyle: "Completed_header", columns: grid4.Columns(
+     grid4.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a> </span> <label id="DevopsItemID" class="edit-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a></label> </text>, style: "col1Width"),
+     grid4.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span>
+    <textarea rows="4" cols="50" id="Summary" class="edit-mode">@item.Summary</textarea></text>, style: "col2Width"),
+     grid4.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span> <label id="lblProject" class="edit-mode">@item.ProjectName</label>  </text>, style: "col2Width"),
+     grid4.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span>  <input type="text" id="Priority" data-val="@item.Priority" value="@item.Priority" class="edit-mode priority-edit" /> </text>, style: "col2Width"),
+     grid4.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span> @Html.DropDownList((string)("Assignee" + Convert.ToString(grid4.Rows.IndexOf(item) + 1)), new SelectList(ViewBag.Assignee, "UserID", "FullName", item.Assignee), "--Select Assignee", new { @class = "edit-mode" })</text>),
+     grid4.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span>
+    <input list="pendingwithlist" id="PendingWith" value="@item.PendingWith" class="edit-mode edit-pendingwith" />
+    <datalist id="pendingwithlist">
+        @foreach (var content in ViewBag.Assignee)
+        {
+            <option id="@content.UserID" value="@content.FullName">@content.FullName</option>
+        }
+    </datalist>
+    </text>,
+            style: "col2Width"),
+     grid4.Column("Fixversion", "Fixversion",
+     format: @<text>     <div class="display-mode FixVersioncontainer">
+            @foreach (var a in item.FixVersionRecords)
+            {
+                if (a.IsDeleted != true)
+                {
+                    <p> @a.FixVersionName </p>
+                }
+            }
+        </div>
+        <div class="edit-mode">
+            @{
+                int index = 1;
+            }
+            @foreach (var a in item.FixVersionRecords)
+            {
+                var id = "FixVersion" + a.FixVersionID;
+                if (a.IsDeleted != true)
+                {
+                    <p>
+                        @a.FixVersionName
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#@id"><span class="glyphicon glyphicon-plus"></span></a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    </p>
+                }
+                <div id="@id" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" id="inputFixVersionID" value="@a.FixVersionID">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" id="inputFixVersionWorkItemID" value="@a.WorkItemID">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputComment">FixVersion Name</label>
+                                        <input type="text" class="form-control" id="inputFixVersionName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPrevComment">Comments</label>
+                                        <input type="text" class="form-control" id="inputFixVersionComment">
+                                    </div>
+                                    <p class="Validation-AddFixVersion" style="color:red;">
+                                    </p>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="change" onclick="AddNewFixVersion(this)" class="btn btn-primary">Add Fix Version</button>
+                                <button type="button" id="btn-AddFixVersion-Cancel" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                index++;
+            }
+        </div>
+    </text>, style: "FixVersion"),
+     grid4.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> @Html.DropDownList((string)("Status" + Convert.ToString(grid4.Rows.IndexOf(item) + 1)), new SelectList(ViewBag.Status, "StatusID", "Title", item.Status), "--Select Status", new { @class = "edit-mode" }) </text>),
+     grid4.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span>  <input type="date" id="ExpectedReleaseDate" value="@string.Format("{0:yyyy-MM-dd}", item.ExpectedReleaseDate)" class="edit-mode" /> </text>, style: "col2Width"),
+     grid4.Column("Notes", "Notes",
+         format: @<text> <div class="display-mode Notes_div">
+            @foreach (var a in item.Notes1)
+            {
+                if (a.IsDeleted != true)
+                {
+                    <div class="note_div" style="color: @a.User.Color.Name">
+                        <p> @a.Note1</p>
+                        <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
+                    </div>
+                }
+            }
+        </div>
+        <div class="edit-mode Notes_div">
+            @{
+                int index = 1;
+                var addId = "NewNotes_grid4" + item.DevopsItemID;
+            }
+
+            @foreach (var a in item.Notes1)
+            {
+                var id = "Notes" + a.NoteID;
+                var deleteid = "NoteDelete" + a.NoteID;
+                     <!-- Trigger the modal with a button -->
+                if (a.IsDeleted != true)
+                {
+                    <div class="note_div" style="color: @a.User.Color.Name">
+                        <p>
+                            @a.Note1  &nbsp;&nbsp;&nbsp;
+                        </p>
+                        <p>
+                            <span class="notedesc">@a.EditedBy </span> &nbsp;
+                            <span class="actionitems notedesc">
+                                @a.EditedDate.ToString("MM-dd-yyyy") &nbsp;&nbsp;
+                                <a href="javascript:void(0);" data-toggle="modal" data-target="#@id"><span class="glyphicon glyphicon-pencil"></span></a> &nbsp;
+                                <a href="javascript:void(0);" data-toggle="modal" data-target="#@deleteid"><span class="glyphicon glyphicon-trash"></span></a>
+                            </span>
+                        </p>
+                    </div>
+                }
+                    <!-- Delete Modal -->
+                <div id="@deleteid" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Delete Confirmation</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputCommentDelete">Are you Sure, You want to delete this ?</label>
+                                        <input type="hidden" class="form-control" id="DeleteNoteID" value="@a.NoteID">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="change" onclick="deleteComment(this)" class="btn btn-primary">Delete</button>
+                                <button type="button" id="btn-DeleteComment-Cancel" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Modal Update -->
+                <div id="@id" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Comments for WorkItem</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputComment">NoteId</label>
+                                        <input type="text" class="form-control" id="inputNoteID" value="@a.NoteID" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputComment">Comments</label>
+                                        <textarea class="form-control " id="inputComment" rows="4">@a.Note1</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputName">EditedBy</label>
+                                        <input list="pendingwithlist" id="inputName" value="@a.EditedBy" class="form-control" />
+                                        <datalist id="pendingwithlist">
+                                            @foreach (var content in ViewBag.Assignee)
+                                            {
+                                                <option id="@content.UserID" value="@content.FullName">@content.FullName</option>
+                                            }
+                                        </datalist>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPrevComment">Edited Date</label>
+                                        <input type="date" class="form-control" id="inputDate" value="@string.Format("{0:yyyy-MM-dd}", DateTime.Now)" disabled>
+                                    </div>
+                                    <p class="Validation-EditComment" style="color:red;"></p>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="change" onclick="AddnewComment(this)" class="btn btn-primary">Send</button>
+                                <button type="button" id="btn-AddComment-Cancel"class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Modal Update -->
+                    <!-- Modal for add New Note -->
+                <div id="@addId" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Add New Note for WorkItem</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <input type="hidden" class="form-control" id="inputworkitemforNewNote" value="@a.WorkItemID">
+                                    <div class="form-group">
+                                        <label for="inputComment">Comments</label>
+                                        <textarea class="form-control " id="inputCommentforNewNote" rows="4"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputName">EditedBy</label>
+                                        @*<input type="text" class="form-control" id="inputeditedbyforNewNote">*@
+                                        <input list="pendingwithlist" id="inputeditedbyforNewNote" class="form-control" />
+                                        <datalist id="pendingwithlist">
+                                            @foreach (var content in ViewBag.Assignee)
+                                            {
+                                                <option id="@content.UserID" value="@content.FullName">@content.FullName</option>
+                                            }
+                                        </datalist>
+                                    </div>
+                                    <p class="Validation-AddNewNote" style="color:red;"></p>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="change" onclick="AddnewCommentforNewNote(this)" class="btn btn-primary">Add New Note</button>
+                                <button type="button" id="btn-AddComment-NewNote-Cancel" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Modal for add New Note end -->
+                index++;
+            }
+            <hr />
+            <a href="javascript:void(0);" data-toggle="modal" data-target="#@addId"><span class="glyphicon glyphicon-plus actionitems"></span></a>
+        </div>
+        </text>, style: "Note"),
+
+     grid4.Column("", format: @<text>
+                    <button class="edit-user display-mode">Edit</button>
+                    <button id=@Convert.ToString(grid4.Rows.IndexOf(item) + 1) class="save-user edit-mode">Update</button>
+                    <button class="cancel-user edit-mode">Cancel</button>
+    </text>, style: "col3Width", canSort: false)
+     ));
+                if (Model.CompletedItems.Count == 0)
+                {
+                    <script type="text/javascript">
+                        $(function () {
+                            var row = $(".@ViewBag.message")[0].insertRow(-1);
+                            row.attr('class', 'dummy');
+                            var cell = $(row.insertCell(-1));
+                            cell.html("Currently No Workitems are under this Category.");
+                            cell.attr("colspan", "10").attr("align", "center");
+                        });
+                    </script>
+                }
+}

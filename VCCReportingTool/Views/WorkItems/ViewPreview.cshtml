@@ -1,0 +1,313 @@
+﻿@model VCCReportingTool.Models.WorkItem
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPDF.cshtml";
+    //var grid = new WebGrid(Model.UnUpdatedData, rowsPerPage: 10, canSort: false, canPage: false); //nonupdateddata
+    var grid1 = new WebGrid(Model.SelectedforDevelopment, rowsPerPage: 10, canSort: false, canPage: false); //selected for dev
+    var grid2 = new WebGrid(Model.DevInProgressdata, rowsPerPage: 10, canSort: false, canPage: false); //devinprogress
+    var grid3 = new WebGrid(Model.BacklogData, rowsPerPage: 10, canSort: false, canPage: false); //backlog
+    var grid4 = new WebGrid(Model.CompletedItems, rowsPerPage: 10, canSort: false, canPage: false); //done items
+    var UpcomingTasks = new WebGrid(Model.UpcomingData, rowsPerPage: 10, canSort: false, canPage: false); // Upcoming /No Jira Tickets
+    var items = ViewBag.Workitemslist;
+    var Status = "";
+    var Assignee = "";
+
+    if (Model.Status1 == null)
+    {
+        Status = "";
+    }
+    else
+    {
+        Status = Model.Status1.Description;
+    }
+
+    if (Model.User == null)
+    {
+        Assignee = "";
+    }
+    else
+    {
+        Assignee = Model.User.FullName;
+    }
+}
+
+<head>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function copyToClip(str) {
+            function listener(e) {
+                e.clipboardData.setData("text/html", str);
+                e.clipboardData.setData("text/plain", str);
+                e.preventDefault();
+            }
+            document.addEventListener("copy", listener);
+            document.execCommand("copy");
+            document.removeEventListener("copy", listener);
+        };
+
+        function CopyToClipboard(element) {
+            // array off all block level elements
+            var block_level_elements = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL', 'DIV', 'FORM', 'HR', 'TABLE'];
+
+            //create new Element so we can vhange elments like we need
+            var newelment = document.createElement("div");
+
+            //copy target Element to the new Element
+            newelment.innerHTML = document.getElementById(element).innerHTML;
+
+            //hide new Element to body
+            newelment.style.opacity = 0;
+            // add new Element to body
+            document.body.appendChild(newelment);
+
+            //get all element childs
+            var descendents = newelment.getElementsByTagName('*');
+
+            //loop in childs
+            for (var i = 0; i < descendents.length; ++i) {
+                //get defult Style
+                var style = window.getComputedStyle(descendents[i]);
+                var dis = style.getPropertyValue('display');
+                //get defult tag name
+                var tagname = descendents[i].tagName;
+
+                //---------------------------
+                //this part is little tricky
+                //---------------------------
+                //true : Element is a block level elements and css display is inline
+                if (dis.includes("inline") && block_level_elements.includes(tagname)) {
+                    //get all Element style include default style
+                    var defultcss = document.defaultView.getComputedStyle(descendents[i], "").cssText;
+                    //chang Element tag from block level elements to inline level elements (span)
+                    descendents[i].outerHTML = descendents[i].outerHTML.replace(new RegExp(tagname, "ig"), "span");			//todo: need to change RegExp to tag name only not inner text
+                    //add all Element style include default style to new tag
+                    descendents[i].style.cssText = defultcss;
+                }
+            }
+            //-----------------copy new Element--------------
+            var doc = document;
+            var range, selection;
+
+            if (doc.body.createTextRange) {
+                range = doc.body.createTextRange();
+                range.moveToElementText(newelment);
+                range.select();
+            }
+
+            else if (window.getSelection) {
+                selection = window.getSelection();
+                range = doc.createRange();
+                range.selectNodeContents(newelment);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+
+            // remove new Element from document
+            document.body.removeChild(newelment);
+
+            document.getElementById("copybtn").innerHTML = "Copied";
+        }
+    </script>
+
+
+
+</head>
+<body>
+    <div>
+        <div class="nav navbar-nav navbar-right">
+            <a href='@Url.Action("Index", "WorkItems")' class="btn btn-primary">Back</a> |
+            <button id='copybtn' class="btn btn-primary" onclick="CopyToClipboard('FullGridContent')">
+                Copy the Stuff
+            </button>
+        </div>
+    </div>
+    <div id="test"></div>
+    <div id="FullGridContent" class="totaldataindiv">
+        <h4>Completed Items (@grid4.TotalRowCount items)</h4>
+        @{
+            @grid4.GetHtml(htmlAttributes: new { @id = "WebGrid4", @class = "Grid" }, tableStyle: "table table-bordered tablealign table-responsive Completed_body", headerStyle: "Completed_header", columns: grid4.Columns(
+            grid4.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID">@item.DevopsItemID</a> </span> </text>, style: "col1Width"),
+            grid4.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+            grid4.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+            grid4.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+            grid4.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
+            grid4.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
+            grid4.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
+            grid4.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
+            grid4.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
+            grid4.Column("Notes", "Notes",
+                  format: @<text> <div class="display-mode Notes_div">
+                    @foreach (var a in item.Notes1)
+                    {
+                        if (a.IsDeleted != true)
+                        {
+                            <div class="note_div" style="color: @a.User.Color">
+                                <p> @a.Note1 </p>
+                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
+                            </div>
+                        }
+                    }
+                </div></text>, style: "Note")
+            ));
+            if (Model.CompletedItems.Count == 0)
+            {
+                <script type="text/javascript">
+                    $(function () {
+                        var row = $("#WebGrid4")[0].insertRow(-1);
+                        var cell = $(row.insertCell(-1));
+                        cell.html("Currently No Workitems are under Completed Items Category.");
+                        cell.attr("colspan", "10").attr("align", "center");
+                    });
+                </script>
+            }
+        }
+
+        <h4>Selected for Development (@grid1.TotalRowCount items)</h4>
+        @{
+            @grid1.GetHtml(htmlAttributes: new { @id = "WebGrid1", @class = "Grid" }, tableStyle: "table table-bordered table-responsive Selected_body", headerStyle: "Selected_header", columns: grid1.Columns(
+            grid1.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID">@item.DevopsItemID</a> </span> </text>, style: "col1Width"),
+            grid1.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+            grid1.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+            grid1.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+            grid1.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
+            grid1.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
+            grid1.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
+            grid1.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
+            grid1.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
+            grid1.Column("Notes", "Notes",
+                  format: @<text> <div class="display-mode Notes_div">
+                    @foreach (var a in item.Notes1)
+                    {
+                        if (a.IsDeleted != true)
+                        {
+                            <div class="note_div" style="color: @a.User.Color">
+                                <p> @a.Note1 </p>
+                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
+                            </div>
+                        }
+                    }
+                </div></text>, style: "Note")
+            ));
+            if (Model.SelectedforDevelopment.Count == 0)
+            {
+                <script type="text/javascript">
+                    $(function () {
+                        var row = $("#WebGrid1")[0].insertRow(-1);
+                        var cell = $(row.insertCell(-1));
+                        cell.html("Currently No Workitems are under Selected for Development Category.");
+                        cell.attr("colspan", "10").attr("align", "center");
+                    });
+                </script>
+            }
+        }
+
+        <h4>Development In-Progress (@grid2.TotalRowCount items)</h4>
+        @{
+            @grid2.GetHtml(htmlAttributes: new { @id = "WebGrid2", @class = "Grid" }, tableStyle: "table table-bordered table-responsive InProgress_body", headerStyle: "progress_header", columns: grid2.Columns(
+            grid2.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID">@item.DevopsItemID</a> </span> </text>, style: "col1Width"),
+            grid2.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+            grid2.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+            grid2.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+            grid2.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
+            grid2.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
+            grid2.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
+            grid2.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
+            grid2.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
+            grid2.Column("Notes", "Notes",
+                  format: @<text> <div class="display-mode Notes_div">
+                    @foreach (var a in item.Notes1)
+                    {
+                        if (a.IsDeleted != true)
+                        {
+                            <div class="note_div" style="color: @a.User.Color">
+                                <p> @a.Note1 </p>
+                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
+                            </div>
+                        }
+                    }
+                </div></text>, style: "Note")
+            ));
+            if (Model.DevInProgressdata.Count == 0)
+            {
+                <script type="text/javascript">
+                    $(function () {
+                        var row = $("#WebGrid2")[0].insertRow(-1);
+                        var cell = $(row.insertCell(-1));
+                        cell.html("Currently No Workitems are under Development In-Progress Category.");
+                        cell.attr("colspan", "10").attr("align", "center");
+                    });
+                </script>
+            }
+        }
+
+        <h4>Backlog Items (@grid3.TotalRowCount items)</h4>
+        @{
+            @grid3.GetHtml(htmlAttributes: new { @id = "WebGrid3", @class = "Grid" }, tableStyle: "table table-bordered table-responsive Backlog_body", headerStyle: "Backlog_header", columns: grid3.Columns(
+            grid3.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID">@item.DevopsItemID</a> </span> </text>, style: "col1Width"),
+            grid3.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+            grid3.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+            grid3.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+            grid3.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
+            grid3.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
+            grid3.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
+            grid3.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
+            grid3.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
+            grid3.Column("Notes", "Notes",
+                  format: @<text> <div class="display-mode Notes_div">
+                    @foreach (var a in item.Notes1)
+                    {
+                        if (a.IsDeleted != true)
+                        {
+                            <div class="note_div" style="color: @a.User.Color">
+                                <p> @a.Note1 </p>
+                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
+                            </div>
+                        }
+                    }
+                </div></text>, style: "Note")
+            ));
+            if (Model.BacklogData.Count == 0)
+            {
+                <script type="text/javascript">
+                    $(function () {
+                        var row = $("#WebGrid3")[0].insertRow(-1);
+                        var cell = $(row.insertCell(-1));
+                        cell.html("Currently No Workitems are under Backlog Items Category.");
+                        cell.attr("colspan", "10").attr("align", "center");
+                    });
+                </script>
+            }
+        }
+
+        <h4>UpComing Data (@UpcomingTasks.TotalRowCount items)</h4>
+        @{
+            @UpcomingTasks.GetHtml(htmlAttributes: new { @id = "UpcomingData", @class = "Grid" }, tableStyle: "table table-bordered table-responsive", headerStyle: "UpComing_header", columns: UpcomingTasks.Columns(
+            UpcomingTasks.Column("TicketID", format: @<text>  <span class="display-mode">@item.TicketID </span> <label id="TicketID" class="edit-mode">@item.TicketID</label> </text>, style: "col1Width"),
+            UpcomingTasks.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
+            UpcomingTasks.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
+            UpcomingTasks.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
+            UpcomingTasks.Column("Requester", "Requester", format: @<text>  <span class="display-mode"> <label id="lblRequester">@item.Requester</label> </span></text>, style: "col2Width"),
+            UpcomingTasks.Column("PendingWith", "Pendingwith", format: @<text> <span class="display-mode"> <label id="lblPendingwith">@item.Pendingwith</label> </span></text>, style: "col2Width"),
+            UpcomingTasks.Column("Comments", "Comments", format: @<text>  <span class="display-mode"> <label id="lblComments">@item.Comments</label> </span></text>, style: "col2Width")
+            ));
+            if (Model.UpcomingData.Count == 0)
+            {
+                <script type="text/javascript">
+                    $(function () {
+                        var row = $("#UpcomingData")[0].insertRow(-1);
+                        var cell = $(row.insertCell(-1));
+                        cell.html("Currently No Workitems are under UpComing Data Category.");
+                        cell.attr("colspan", "10").attr("align", "center");
+                    });
+                </script>
+            }
+        }
+
+
+
+    </div>
+</body>
