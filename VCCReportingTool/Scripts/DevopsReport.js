@@ -29,13 +29,11 @@ $(document).ready(function () {
             data: { 'SelectedItems': str, 'FilterText': FilterText },
             success: function (response) {
                 $("#divLoader").hide();
-                //alert(response.responseText)
-                //location.reload();
                 displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 $("#divLoader").hide();
-                alert(errorMessage);
+                displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
             }
         });
     });
@@ -78,6 +76,7 @@ $(document).ready(function () {
     });
 })
 
+
 function updateTableCount(id) {
     var str = '<tr class="dummy"><td colspan="10" align="center">Currently No Workitems under this Category.</td></tr>';
     if ($(id).parent().next().find('tbody >tr').not('.hide, .dummy').length == 0) {
@@ -103,9 +102,6 @@ function displayModelPopup(hdrlbl, bdycontent, isinfo, actionToDo) {
     $("#btn-dsply-mdl-popup").trigger("click");
 }
 
-
-
-
 function AddnewComment(a) {
     var Comment = $(a).parent().parent().find(".modal-body #inputComment").val();
     var EditedBy = $(a).parent().parent().find(".modal-body #inputName").val();
@@ -118,20 +114,20 @@ function AddnewComment(a) {
     if (!Comment) { $(".Validation-EditComment").append("Please Enter Comment <br>"); validationSumary = true; }
     if (validationSumary) { return; }
     $(".Validation-EditComment").text("");
-
+    $("#divLoader").show();
     $.ajax({
         url: '../WorkItems/NewNoteUpdate/',
         type: 'POST',
         dataType: 'json',
         data: { 'UpdatedNote': Comment, 'EditedBy': EditedBy, 'EditedDate': EditedDate, 'NoteId': NoteID },
         success: function (response) {
-            //alert(response.responseText)
-            //location.reload();
+            $("#divLoader").hide();
             $("#btn-AddComment-Cancel").trigger("click");
             displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
         },
         error: function (jqXhr, textStatus, errorMessage) {
-            alert(errorMessage);
+            $("#divLoader").hide();
+            displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
         }
     });
 }
@@ -148,20 +144,20 @@ function AddNewFixVersion(a) {
     if (!Comment) { $(".Validation-AddFixVersion").append("Please Enter Comment <br>"); validationSumary = true; }
     if (validationSumary) { return; }
     $(".Validation-AddFixVersion").text("");
-
+    $("#divLoader").show();
     $.ajax({
         url: '../WorkItems/AddNewFixVersion/',
         type: 'POST',
         dataType: 'json',
         data: { 'FixVersionName': FixVersionName, 'Comment': Comment, 'WorkItemID': WorkItemID, 'FixVersionID': FixVersionID },
         success: function (response) {
-            //alert(response.responseText)
-            //location.reload();
+            $("#divLoader").hide();
             $("#btn-AddFixVersion-Cancel").trigger("click");
             displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
         },
         error: function (jqXhr, textStatus, errorMessage) {
-            alert(errorMessage);
+            $("#divLoader").hide();
+            displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
         }
     });
 }
@@ -177,23 +173,22 @@ function AddnewCommentforNewNote(a) {
     if (!Comment) { $(".Validation-AddNewNote").append("Please Enter Comment <br>"); validationSumary = true; }
     if (validationSumary) { return; }
     $(".Validation-AddNewNote").text("");
-
+    $("#divLoader").show();
     $.ajax({
         url: '../WorkItems/AddNoteforWorkItem/',
         type: 'POST',
         dataType: 'json',
         data: { 'Comment': Comment, 'WorkItemID': WorkItemID, 'UpdateBy': UpdateBy },
         success: function (response) {
-            //alert(response.responseText)
-            //location.reload();
+            $("#divLoader").hide();
             $("#btn-AddComment-NewNote-Cancel").trigger("click");
             displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
         },
         error: function (jqXhr, textStatus, errorMessage) {
-            alert(errorMessage);
+            $("#divLoader").hide();
+            displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
         }
     });
-
 }
 
 function ClearFilter() {
@@ -204,25 +199,24 @@ function ClearFilter() {
         updateTableCount(tablecounids[i]);
     }
     $("#lblfilterProject").addClass("hide");
-
 }
-
 
 function deleteComment(a) {
     var NoteId = $(a).parent().parent().find(".modal-body #DeleteNoteID").val();
+    $("#divLoader").show();
     $.ajax({
         url: '../WorkItems/DeleteNote/',
         type: 'POST',
         dataType: 'json',
         data: { 'id': NoteId },
         success: function (response) {
-            //alert(response.responseText)
-            //location.reload();
+            $("#divLoader").hide();
             $("#btn-DeleteComment-Cancel").trigger("click");
             displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
         },
         error: function (jqXhr, textStatus, errorMessage) {
-            alert(errorMessage);
+            $("#divLoader").hide();
+            displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
         }
     });
 }
@@ -248,6 +242,7 @@ function UpdateWorkItem(a) {
     if (!assignee) { $("#Validation-UpdateWorkItem").append("Please Select Assignee <br>"); validationSumary = true; }
     if (validationSumary) { return; }
     $("#Validation-UpdateWorkItem").text("");
+    $("#divLoader").show();
     $.ajax({
         url: '../WorkItems/UpdateWorkitembyID/',
         type: 'POST',
@@ -264,11 +259,13 @@ function UpdateWorkItem(a) {
             'assignee': assignee
         },
         success: function (response) {
+            $("#divLoader").hide();
             $("#btn-UpdateWorkItem-Cancel").trigger("click");
             displayModelPopup("Alert", "<b> "+ response.responseText +"</b>", true, "OK")
         },
         error: function (data) {
-            alert("Error: " + data.responseText);
+            $("#divLoader").hide();
+            displayModelPopup("Error", "<b> " + data.responseText + "</b>", true, "OK")
         }
     });
 }
@@ -318,7 +315,7 @@ $(function () {
                 "Status": Status,
                 "Assignee": Assignee
             }
-
+        $("#divLoader").show();
         $.ajax({
             url: '../WorkItems/UpdateRecord/',
             data: { 'initialPriorityValue': initialPriorityValue, 'changedPriorityValue': changedPriorityValue, 'PriorityType': PriorityType, 'PromptClick': txt, 'workitem': JSON.stringify(UserModel) },
@@ -327,10 +324,12 @@ $(function () {
             success: function (response) {
                 //alert(response.responseText)
                 //location.reload();
+                $("#divLoader").hide();
                 displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
             },
             error: function (jqXhr, textStatus, errorMessage) {
-                alert(errorMessage);
+                $("#divLoader").hide();
+                displayModelPopup("Error", "<b> " + errorMessage + "</b>", true, "OK")
             }
         });
     });

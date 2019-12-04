@@ -23,7 +23,6 @@
     }
 }
 
-
 @{
     @grid4.GetHtml(htmlAttributes: new { @id = "WebGrid4", @class = "Grid " }, tableStyle: "table table-bordered tablealign table-responsive Completed_body " + @ViewBag.message, headerStyle: "Completed_header", columns: grid4.Columns(
      grid4.Column("DevopsItemID", "DevopsID", format: @<text>  <span class="display-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a> </span> <label id="DevopsItemID" class="edit-mode"><a href="https://msazure.visualstudio.com/One/_workitems/edit/@item.DevopsItemID/">@item.DevopsItemID</a></label> </text>, style: "col1Width"),
