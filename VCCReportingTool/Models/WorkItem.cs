@@ -11,6 +11,7 @@
 
 namespace VCCReportingTool.Models
 {
+
     using System;
     using System.Collections.Generic;
 
@@ -22,6 +23,7 @@ namespace VCCReportingTool.Models
             this.FixVersionRecords = new HashSet<FixVersionRecord>();
             this.Notes1 = new HashSet<Note>();
         }
+
         public int WorkItemID { get; set; }
         public Nullable<int> DevopsItemID { get; set; }
         public string Summary { get; set; }
@@ -35,12 +37,14 @@ namespace VCCReportingTool.Models
         public string PendingWith { get; set; }
         public Nullable<bool> IsUpdated { get; set; }
         public string ProjectName { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FixVersionRecord> FixVersionRecords { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Note> Notes1 { get; set; }
         public virtual Status Status1 { get; set; }
         public virtual User User { get; set; }
+
         public virtual ICollection<WorkItem> UnUpdatedData { get; set; }
         public virtual ICollection<WorkItem> CompletedItems { get; set; } //done
         public virtual ICollection<WorkItem> DevInProgressdata { get; set; }     //devinprogress    

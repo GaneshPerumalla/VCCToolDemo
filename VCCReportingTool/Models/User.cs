@@ -11,7 +11,6 @@
 
 namespace VCCReportingTool.Models
 {
-
     using System;
     using System.Collections.Generic;
 

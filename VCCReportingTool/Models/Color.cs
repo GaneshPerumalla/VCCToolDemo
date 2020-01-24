@@ -11,12 +11,12 @@
 
 namespace VCCReportingTool.Models
 {
-
     using System;
     using System.Collections.Generic;
 
     public partial class Color
     {
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Color()
         {
@@ -24,6 +24,7 @@ namespace VCCReportingTool.Models
         }
         public int ColorID { get; set; }
         public string Name { get; set; }
+        public string HexCode { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }

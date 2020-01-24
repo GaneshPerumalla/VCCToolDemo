@@ -257,24 +257,41 @@ namespace VCCReportingTool.Controllers
             return Json(new { success = true, responseText = "Selected Note deleted Successfully" });
         }
 
-        
+
         public ActionResult ViewPreview()
         {
-            var SelectedProject  = Request.Form["FilteredProject"].ToString();
+            var SelectedProject = Request.Form["FilteredProject"].ToString();
             WorkItem objWorkItem = new WorkItem();
-            var UnUpdateddata = db.WorkItems.Where(x => x.IsUpdated == false && x.ProjectName == SelectedProject).ToList();
-            var DoneItemsdata = db.WorkItems.Where(x => x.Status == 1 && x.ProjectName == SelectedProject).ToList();
-            var Devinprocessdata = db.WorkItems.Where(x => x.Status == 2 && x.ProjectName == SelectedProject).ToList();
-            var SelectedforDevelopment = db.WorkItems.Where(x => x.Status == 3 && x.ProjectName == SelectedProject).ToList();
-            var backlogdata = db.WorkItems.Where(x => x.Status == 4 && x.ProjectName == SelectedProject).ToList();
-            var UpcomingTasks = db.UpcomingTasks.ToList();
-
-            objWorkItem.UnUpdatedData = UnUpdateddata;
-            objWorkItem.DevInProgressdata = Devinprocessdata;
-            objWorkItem.SelectedforDevelopment = SelectedforDevelopment;
-            objWorkItem.BacklogData = backlogdata;
-            objWorkItem.CompletedItems = DoneItemsdata;
-            objWorkItem.UpcomingData = UpcomingTasks;
+            if (SelectedProject != "")
+            {
+                var UnUpdateddata = db.WorkItems.Where(x => x.IsUpdated == false && x.ProjectName == SelectedProject).ToList();
+                var DoneItemsdata = db.WorkItems.Where(x => x.Status == 1 && x.ProjectName == SelectedProject).ToList();
+                var Devinprocessdata = db.WorkItems.Where(x => x.Status == 2 && x.ProjectName == SelectedProject).ToList();
+                var SelectedforDevelopment = db.WorkItems.Where(x => x.Status == 3 && x.ProjectName == SelectedProject).ToList();
+                var backlogdata = db.WorkItems.Where(x => x.Status == 4 && x.ProjectName == SelectedProject).ToList();
+                var UpcomingTasks = db.UpcomingTasks.ToList();
+                objWorkItem.UnUpdatedData = UnUpdateddata;
+                objWorkItem.DevInProgressdata = Devinprocessdata;
+                objWorkItem.SelectedforDevelopment = SelectedforDevelopment;
+                objWorkItem.BacklogData = backlogdata;
+                objWorkItem.CompletedItems = DoneItemsdata;
+                objWorkItem.UpcomingData = UpcomingTasks;
+            }
+            else
+            {
+                var UnUpdateddata = db.WorkItems.Where(x => x.IsUpdated == false).ToList();
+                var DoneItemsdata = db.WorkItems.Where(x => x.Status == 1).ToList();
+                var Devinprocessdata = db.WorkItems.Where(x => x.Status == 2).ToList();
+                var SelectedforDevelopment = db.WorkItems.Where(x => x.Status == 3).ToList();
+                var backlogdata = db.WorkItems.Where(x => x.Status == 4).ToList();
+                var UpcomingTasks = db.UpcomingTasks.ToList();
+                objWorkItem.UnUpdatedData = UnUpdateddata;
+                objWorkItem.DevInProgressdata = Devinprocessdata;
+                objWorkItem.SelectedforDevelopment = SelectedforDevelopment;
+                objWorkItem.BacklogData = backlogdata;
+                objWorkItem.CompletedItems = DoneItemsdata;
+                objWorkItem.UpcomingData = UpcomingTasks;
+            }
             return View(objWorkItem);
         }
 

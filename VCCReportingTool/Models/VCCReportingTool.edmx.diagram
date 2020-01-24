@@ -13,11 +13,11 @@
         <AssociationConnector Association="VCCReportingToolModel.FK_FixVersionRecords_WorkItems" />
         <AssociationConnector Association="VCCReportingToolModel.FK_Notes_WorkItems" />
         <AssociationConnector Association="VCCReportingToolModel.FK_WorkItems_Status" />
-        <EntityTypeShape EntityType="VCCReportingToolModel.Color" Width="1.5" PointX="3.25" PointY="6.125" />
         <EntityTypeShape EntityType="VCCReportingToolModel.User" Width="1.5" PointX="0.625" PointY="3.625" />
-        <AssociationConnector Association="VCCReportingToolModel.FK_Users_Color" />
         <AssociationConnector Association="VCCReportingToolModel.FK_Notes_Users" />
         <AssociationConnector Association="VCCReportingToolModel.FK_WorkItems_Users" />
+        <EntityTypeShape EntityType="VCCReportingToolModel.Color" Width="1.5" PointX="2.75" PointY="6.375" />
+        <AssociationConnector Association="VCCReportingToolModel.FK_Users_Color" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -11,6 +11,7 @@
           </Key>
           <Property Name="ColorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="HexCode" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="FixVersionRecords">
           <Key>
@@ -213,12 +214,7 @@
             <End Role="Status" EntitySet="Status" />
             <End Role="WorkItem" EntitySet="WorkItems" />
           </AssociationSet>
-          <EntitySet Name="Colors" EntityType="VCCReportingToolModel.Color" />
           <EntitySet Name="Users" EntityType="VCCReportingToolModel.User" />
-          <AssociationSet Name="FK_Users_Color" Association="VCCReportingToolModel.FK_Users_Color">
-            <End Role="Color" EntitySet="Colors" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Notes_Users" Association="VCCReportingToolModel.FK_Notes_Users">
             <End Role="User" EntitySet="Users" />
             <End Role="Note" EntitySet="Notes" />
@@ -226,6 +222,11 @@
           <AssociationSet Name="FK_WorkItems_Users" Association="VCCReportingToolModel.FK_WorkItems_Users">
             <End Role="User" EntitySet="Users" />
             <End Role="WorkItem" EntitySet="WorkItems" />
+          </AssociationSet>
+          <EntitySet Name="Colors" EntityType="VCCReportingToolModel.Color" />
+          <AssociationSet Name="FK_Users_Color" Association="VCCReportingToolModel.FK_Users_Color">
+            <End Role="Color" EntitySet="Colors" />
+            <End Role="User" EntitySet="Users" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FixVersionRecord">
@@ -336,14 +337,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Color">
-          <Key>
-            <PropertyRef Name="ColorID" />
-          </Key>
-          <Property Name="ColorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Users" Relationship="VCCReportingToolModel.FK_Users_Color" FromRole="Color" ToRole="User" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserID" />
@@ -353,22 +346,10 @@
           <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ColorId" Type="Int32" />
-          <NavigationProperty Name="Color" Relationship="VCCReportingToolModel.FK_Users_Color" FromRole="User" ToRole="Color" />
           <NavigationProperty Name="Notes" Relationship="VCCReportingToolModel.FK_Notes_Users" FromRole="User" ToRole="Note" />
           <NavigationProperty Name="WorkItems" Relationship="VCCReportingToolModel.FK_WorkItems_Users" FromRole="User" ToRole="WorkItem" />
+          <NavigationProperty Name="Color" Relationship="VCCReportingToolModel.FK_Users_Color" FromRole="User" ToRole="Color" />
         </EntityType>
-        <Association Name="FK_Users_Color">
-          <End Type="VCCReportingToolModel.Color" Role="Color" Multiplicity="0..1" />
-          <End Type="VCCReportingToolModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Color">
-              <PropertyRef Name="ColorID" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="ColorId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Notes_Users">
           <End Type="VCCReportingToolModel.User" Role="User" Multiplicity="0..1" />
           <End Type="VCCReportingToolModel.Note" Role="Note" Multiplicity="*" />
@@ -390,6 +371,27 @@
             </Principal>
             <Dependent Role="WorkItem">
               <PropertyRef Name="Assignee" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Color">
+          <Key>
+            <PropertyRef Name="ColorID" />
+          </Key>
+          <Property Name="ColorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HexCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="VCCReportingToolModel.FK_Users_Color" FromRole="Color" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_Users_Color">
+          <End Type="VCCReportingToolModel.Color" Role="Color" Multiplicity="0..1" />
+          <End Type="VCCReportingToolModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Color">
+              <PropertyRef Name="ColorID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="ColorId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -468,14 +470,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Colors">
-            <EntityTypeMapping TypeName="VCCReportingToolModel.Color">
-              <MappingFragment StoreEntitySet="Color">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ColorID" ColumnName="ColorID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="VCCReportingToolModel.User">
               <MappingFragment StoreEntitySet="Users">
@@ -484,6 +478,15 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Colors">
+            <EntityTypeMapping TypeName="VCCReportingToolModel.Color">
+              <MappingFragment StoreEntitySet="Color">
+                <ScalarProperty Name="HexCode" ColumnName="HexCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ColorID" ColumnName="ColorID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

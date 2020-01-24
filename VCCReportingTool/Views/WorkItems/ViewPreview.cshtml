@@ -135,23 +135,9 @@
             grid4.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
             grid4.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
             grid4.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
-            grid4.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
             grid4.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
             grid4.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
-            grid4.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
-            grid4.Column("Notes", "Notes",
-                  format: @<text> <div class="display-mode Notes_div">
-                    @foreach (var a in item.Notes1)
-                    {
-                        if (a.IsDeleted != true)
-                        {
-                            <div class="note_div" style="color: @a.User.Color">
-                                <p> @a.Note1 </p>
-                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
-                            </div>
-                        }
-                    }
-                </div></text>, style: "Note")
+            grid4.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width")
             ));
             if (Model.CompletedItems.Count == 0)
             {
@@ -174,23 +160,9 @@
             grid1.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
             grid1.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
             grid1.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
-            grid1.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
             grid1.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
             grid1.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
-            grid1.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
-            grid1.Column("Notes", "Notes",
-                  format: @<text> <div class="display-mode Notes_div">
-                    @foreach (var a in item.Notes1)
-                    {
-                        if (a.IsDeleted != true)
-                        {
-                            <div class="note_div" style="color: @a.User.Color">
-                                <p> @a.Note1 </p>
-                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
-                            </div>
-                        }
-                    }
-                </div></text>, style: "Note")
+            grid1.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width")
             ));
             if (Model.SelectedforDevelopment.Count == 0)
             {
@@ -213,23 +185,9 @@
             grid2.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
             grid2.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
             grid2.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
-            grid2.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
             grid2.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
             grid2.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
-            grid2.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
-            grid2.Column("Notes", "Notes",
-                  format: @<text> <div class="display-mode Notes_div">
-                    @foreach (var a in item.Notes1)
-                    {
-                        if (a.IsDeleted != true)
-                        {
-                            <div class="note_div" style="color: @a.User.Color">
-                                <p> @a.Note1 </p>
-                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
-                            </div>
-                        }
-                    }
-                </div></text>, style: "Note")
+            grid2.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width")
             ));
             if (Model.DevInProgressdata.Count == 0)
             {
@@ -252,23 +210,9 @@
             grid3.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
             grid3.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
             grid3.Column(columnName: "Assignee", header: "Assignee", format: @<text> <span class="display-mode"> <label id="lblAssignee">@item.User.FullName</label> </span></text>),
-            grid3.Column("PendingWith", "PendingWith", format: @<text> <span class="display-mode"> <label id="lblPendingWith">@item.PendingWith</label> </span></text>, style: "col2Width"),
             grid3.Column("Fixversion", "Fixversion", format: @<text> <span class="display-mode"> <label id="lblFixversion">@item.Fixversion</label> </span></text>, style: "col2Width"),
             grid3.Column(columnName: "Status", header: "Status", format: @<text> <span class="display-mode"> <label id="lblStatus">@item.Status1.Description</label> </span> </text>),
-            grid3.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width"),
-            grid3.Column("Notes", "Notes",
-                  format: @<text> <div class="display-mode Notes_div">
-                    @foreach (var a in item.Notes1)
-                    {
-                        if (a.IsDeleted != true)
-                        {
-                            <div class="note_div" style="color: @a.User.Color">
-                                <p> @a.Note1 </p>
-                                <p class="notedesc"><span>@a.EditedBy </span> &nbsp;<span class="actionitems">@a.EditedDate.ToString("MM-dd-yyyy")</span> </p>
-                            </div>
-                        }
-                    }
-                </div></text>, style: "Note")
+            grid3.Column("ReleaseDate", "ReleaseDate", format: @<text> <span class="display-mode"> <label id="lblReleaseDate">@item.ExpectedReleaseDate.ToString("MM-dd-yyyy")</label> </span></text>, style: "col2Width")
             ));
             if (Model.BacklogData.Count == 0)
             {
@@ -286,13 +230,11 @@
         <h4>UpComing Data (@UpcomingTasks.TotalRowCount items)</h4>
         @{
             @UpcomingTasks.GetHtml(htmlAttributes: new { @id = "UpcomingData", @class = "Grid" }, tableStyle: "table table-bordered table-responsive", headerStyle: "UpComing_header", columns: UpcomingTasks.Columns(
-            UpcomingTasks.Column("TicketID", format: @<text>  <span class="display-mode">@item.TicketID </span> <label id="TicketID" class="edit-mode">@item.TicketID</label> </text>, style: "col1Width"),
+            UpcomingTasks.Column("DevopsItemID", format: @<text>  <span class="display-mode">@item.TicketID </span> <label id="TicketID" class="edit-mode">@item.TicketID</label> </text>, style: "col1Width"),
             UpcomingTasks.Column("Summary", "Summary", format: @<text>  <span class="display-mode"> <label id="lblSummary">@item.Summary</label> </span></text>, style: "col2Width"),
             UpcomingTasks.Column("ProjectName", "Project", format: @<text> <span class="display-mode"> <label id="lblProject">@item.ProjectName</label> </span></text>, style: "col2Width"),
             UpcomingTasks.Column("Priority", "Priority", format: @<text> <span class="display-mode"> <label id="lblPriority">@item.Priority</label> </span></text>, style: "col2Width"),
-            UpcomingTasks.Column("Requester", "Requester", format: @<text>  <span class="display-mode"> <label id="lblRequester">@item.Requester</label> </span></text>, style: "col2Width"),
-            UpcomingTasks.Column("PendingWith", "Pendingwith", format: @<text> <span class="display-mode"> <label id="lblPendingwith">@item.Pendingwith</label> </span></text>, style: "col2Width"),
-            UpcomingTasks.Column("Comments", "Comments", format: @<text>  <span class="display-mode"> <label id="lblComments">@item.Comments</label> </span></text>, style: "col2Width")
+            UpcomingTasks.Column("Requester", "Requester", format: @<text>  <span class="display-mode"> <label id="lblRequester">@item.Requester</label> </span></text>, style: "col2Width")
             ));
             if (Model.UpcomingData.Count == 0)
             {

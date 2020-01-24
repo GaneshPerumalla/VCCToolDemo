@@ -42,9 +42,9 @@ public partial class VCCReportingToolEntities : DbContext
 
     public virtual DbSet<WorkItem> WorkItems { get; set; }
 
-    public virtual DbSet<Color> Colors { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<Color> Colors { get; set; }
 
 }
 
