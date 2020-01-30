@@ -261,7 +261,7 @@ function UpdateWorkItem(a) {
         success: function (response) {
             $("#divLoader").hide();
             $("#btn-UpdateWorkItem-Cancel").trigger("click");
-            displayModelPopup("Alert", "<b> "+ response.responseText +"</b>", true, "OK")
+            displayModelPopup("Alert", "<b> " + response.responseText + "</b>", true, "OK")
         },
         error: function (data) {
             $("#divLoader").hide();

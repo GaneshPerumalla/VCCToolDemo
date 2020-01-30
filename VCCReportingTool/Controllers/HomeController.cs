@@ -24,14 +24,14 @@ namespace VCCReportingTool.Controllers
     public class HomeController : Controller
     {
         private VCCReportingToolEntities db = new VCCReportingToolEntities();
-        
+
         public ActionResult GetProjects(string SelectedItems, string FilterText)
         {
             try
             {
                 //Prompt user for credential
                 VssConnection connection = new VssConnection(new Uri("https://dev.azure.com/msazure"), new VssClientCredentials());
-                var name = connection.Settings.ClientCertificateManager.ClientCertificates[0].Subject.Remove(0,3);
+                var name = connection.Settings.ClientCertificateManager.ClientCertificates[0].Subject.Remove(0, 3);
                 var FullName = name.Substring(0, name.Length - 18);
                 Random random = new Random();
                 //save Login user details in table-User
@@ -47,11 +47,17 @@ namespace VCCReportingTool.Controllers
                 //create http client and query for resutls
                 WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
                 Wiql query = new Wiql();
+                string stquery = string.Empty;
                 if (FilterText != "")
                 {
-                    query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where [System.AreaPath] IN(" + SelectedItems + ") AND [System.Tags] CONTAINS '" + FilterText + "'" };
+                    var Usertags = FilterText.Split(',');
+                    foreach (var item in Usertags)
+                    {
+                        stquery = stquery + " AND [System.Tags] CONTAINS '" + item + "'";
+                    }
+                    query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where [System.AreaPath] IN(" + SelectedItems + ")" + stquery };
                 }
-                else if(FilterText == "")
+                else if (FilterText == "")
                 {
                     query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where [System.AreaPath] IN(" + SelectedItems + ")" };
                 }
@@ -85,12 +91,14 @@ namespace VCCReportingTool.Controllers
                     foreach (var workItem in workitems)
                     {
                         var projectname = workItem.Fields["System.AreaPath"].ToString().Replace("One\\Business Applications Group Websites\\", "");
-                        if (projectname.Contains("Dynamics 365 Marketing Website")){projectname = "Dynamics";}
-                        else if (projectname.Contains("Dynamics 365 Marketing Website\\Integrated Marketing")) { projectname = "Dynamics 365 Integrated Marketing"; }
-                        else if (projectname.Contains("Power BI Marketing Website")){projectname = "Power BI";}
-                        else if (projectname.Contains("Power BI Marketing Website\\Integrated Marketing")) { projectname = "Power BI Integrated Marketing"; }
+                        if (projectname.Contains("Dynamics 365 Marketing Website")) { projectname = "Dynamics"; }
+                        else if (projectname.Contains("Power BI Marketing Website")) { projectname = "Power BI"; }
                         else if (projectname.Contains("Power Platform Marketing Website")) { projectname = "Power Platform"; }
                         else if (projectname.Contains("Power Query Marketing Website")) { projectname = "Power Query"; }
+                        else if (projectname.Contains("Power Virtual Agent Marketing Website")) { projectname = "Power Virtual Agent"; }
+                        else if (projectname.Contains("PowerApps marketing website")) { projectname = "PowerApps"; }
+                        else if (projectname.Contains("Formspro Marketing Website")) { projectname = "Forms Pro"; }
+                        else if (projectname.Contains("Flow Marketing Website")) { projectname = "Flow"; }
 
                         var getresult = db.WorkItems.Where(x => x.DevopsItemID == workItem.Id).ToList();
                         int maxlength = 70;
@@ -99,7 +107,7 @@ namespace VCCReportingTool.Controllers
                             VCCReportingTool.Models.WorkItem objworkitem = new VCCReportingTool.Models.WorkItem();
                             objworkitem.DevopsItemID = workItem.Id;
                             objworkitem.Summary = workItem.Fields["System.Title"].ToString();
-                            if(objworkitem.Summary.Length > maxlength)
+                            if (objworkitem.Summary.Length > maxlength)
                             {
                                 objworkitem.Summary = objworkitem.Summary.Substring(0, Math.Min(objworkitem.Summary.Length, maxlength));
                                 objworkitem.Summary = objworkitem.Summary + ".....";

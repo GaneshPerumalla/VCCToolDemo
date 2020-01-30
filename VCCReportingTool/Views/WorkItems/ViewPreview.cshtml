@@ -30,11 +30,9 @@
         Assignee = Model.User.FullName;
     }
 }
-
 <head>
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
     <script type="text/javascript">
         function copyToClip(str) {
             function listener(e) {
@@ -113,8 +111,6 @@
         }
     </script>
 
-
-
 </head>
 <body>
     <div>
@@ -151,7 +147,6 @@
                 </script>
             }
         }
-
         <h4>Selected for Development (@grid1.TotalRowCount items)</h4>
         @{
             @grid1.GetHtml(htmlAttributes: new { @id = "WebGrid1", @class = "Grid" }, tableStyle: "table table-bordered table-responsive Selected_body", headerStyle: "Selected_header", columns: grid1.Columns(
@@ -176,7 +171,6 @@
                 </script>
             }
         }
-
         <h4>Development In-Progress (@grid2.TotalRowCount items)</h4>
         @{
             @grid2.GetHtml(htmlAttributes: new { @id = "WebGrid2", @class = "Grid" }, tableStyle: "table table-bordered table-responsive InProgress_body", headerStyle: "progress_header", columns: grid2.Columns(
@@ -201,7 +195,6 @@
                 </script>
             }
         }
-
         <h4>Backlog Items (@grid3.TotalRowCount items)</h4>
         @{
             @grid3.GetHtml(htmlAttributes: new { @id = "WebGrid3", @class = "Grid" }, tableStyle: "table table-bordered table-responsive Backlog_body", headerStyle: "Backlog_header", columns: grid3.Columns(
@@ -226,7 +219,6 @@
                 </script>
             }
         }
-
         <h4>UpComing Data (@UpcomingTasks.TotalRowCount items)</h4>
         @{
             @UpcomingTasks.GetHtml(htmlAttributes: new { @id = "UpcomingData", @class = "Grid" }, tableStyle: "table table-bordered table-responsive", headerStyle: "UpComing_header", columns: UpcomingTasks.Columns(
@@ -248,8 +240,5 @@
                 </script>
             }
         }
-
-
-
     </div>
 </body>
