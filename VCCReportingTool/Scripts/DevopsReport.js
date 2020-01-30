@@ -46,7 +46,7 @@ $(document).ready(function () {
 
         $("#FilteredProject").val(selectedProject);
         $('table tr>td:nth-child(3)').each(function () {
-            console.log($(this).find('label').html())
+            //console.log($(this).find('label').html())
             if ($(this).find('label').html() == selectedProject) {
                 $(this).parent().removeClass("hide");
             }
