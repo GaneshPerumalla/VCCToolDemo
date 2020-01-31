@@ -42,11 +42,10 @@ $(document).ready(function () {
 
     $(".filterData").click(function () {
         $("#lblfilterProject").removeClass("hide");
+        $(".noworkitems").remove();
         var selectedProject = $(this).attr("data-projectcode");
-
         $("#FilteredProject").val(selectedProject);
         $('table tr>td:nth-child(3)').each(function () {
-            //console.log($(this).find('label').html())
             if ($(this).find('label').html() == selectedProject) {
                 $(this).parent().removeClass("hide");
             }
@@ -78,11 +77,12 @@ $(document).ready(function () {
 
 
 function updateTableCount(id) {
-    var str = '<tr class="dummy"><td colspan="10" align="center">Currently No Workitems under this Category.</td></tr>';
-    if ($(id).parent().next().find('tbody >tr').not('.hide, .dummy').length == 0) {
-        $(id).parent().next().find('tbody').html(str);
-        $(id).html("(" + $(id).parent().next().find('tbody >tr').not('.hide, .dummy').length + ")");
-    } else { $(id).html("(" + $(id).parent().next().find('tbody >tr').not('.hide, .dummy').length + ")"); }
+    var str = '<tr class="tablecount noworkitems"><td colspan="10" align="center">Currently No Workitems under this Category.</td></tr>';
+    if ($(id).parent().next().find('tbody >tr').not('.hide, .tablecount').length == 0) {
+        $(id).parent().next().find('tbody tr').addClass("hide");
+        $(id).parent().next().find('tbody').append(str);
+        $(id).html("(" + $(id).parent().next().find('tbody >tr').not('.hide, .tablecount').length + ")");
+    } else { $(id).html("(" + $(id).parent().next().find('tbody >tr').not('.hide, .tablecount').length + ")"); }
 }
 
 function displayModelPopup(hdrlbl, bdycontent, isinfo, actionToDo) {
@@ -199,6 +199,7 @@ function ClearFilter() {
         updateTableCount(tablecounids[i]);
     }
     $("#lblfilterProject").addClass("hide");
+    $(".noworkitems").remove();
 }
 
 function deleteComment(a) {

@@ -48,19 +48,29 @@ namespace VCCReportingTool.Controllers
                 WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
                 Wiql query = new Wiql();
                 string stquery = string.Empty;
-                if (FilterText != "")
-                {
-                    var Usertags = FilterText.Split(',');
+                var Usertags = FilterText.Split(',');
+                if (FilterText != "" && SelectedItems != "")
+                {                    
                     foreach (var item in Usertags)
                     {
                         stquery = stquery + " AND [System.Tags] CONTAINS '" + item + "'";
                     }
                     query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where [System.AreaPath] IN(" + SelectedItems + ")" + stquery };
                 }
-                else if (FilterText == "")
+                else if (FilterText == "" && SelectedItems != "")
                 {
                     query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where [System.AreaPath] IN(" + SelectedItems + ")" };
                 }
+                else if(FilterText != "" & SelectedItems == "")
+                {
+                    foreach (var item in Usertags)
+                    {
+                        stquery = stquery + " [System.Tags] CONTAINS '" + item + "' AND";
+                    }
+                    stquery = stquery.Remove(stquery.Length - 3);
+                    query = new Wiql() { Query = @"SELECT [Id], [Title], [State] FROM workitems Where "+ stquery };
+                }
+
                 WorkItemQueryResult queryResults = witClient.QueryByWiqlAsync(query).Result;
                 //Get the Work item id & URL
                 if (queryResults == null || queryResults.WorkItems.Count() == 0)
@@ -98,7 +108,8 @@ namespace VCCReportingTool.Controllers
                         else if (projectname.Contains("Power Virtual Agent Marketing Website")) { projectname = "Power Virtual Agent"; }
                         else if (projectname.Contains("PowerApps marketing website")) { projectname = "PowerApps"; }
                         else if (projectname.Contains("Formspro Marketing Website")) { projectname = "Forms Pro"; }
-                        else if (projectname.Contains("Flow Marketing Website")) { projectname = "Flow"; }
+                        else if (projectname.Contains("Flow marketing website")) { projectname = "Flow"; }
+                        else if (projectname.Contains("Net Promoter Score service")) { projectname = "NPS"; }
 
                         var getresult = db.WorkItems.Where(x => x.DevopsItemID == workItem.Id).ToList();
                         int maxlength = 70;
